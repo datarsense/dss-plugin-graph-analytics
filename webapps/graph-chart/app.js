@@ -216,21 +216,21 @@ function neighbourhoodHighlight(params) {
       for (var nodeId in allNodes) {
         allNodes[nodeId].color = "rgba(200,200,200,0.5)";
       }
-      var connectedNodes = network.getConnectedNodes(selectedNode);
+      var connectedNodes = network.getConnectedNodes(selectedNode, 'to');
       var allConnectedNodes = [];
   
       // get the second degree nodes
       for (i = 1; i < degrees; i++) {
         for (j = 0; j < connectedNodes.length; j++) {
           allConnectedNodes = allConnectedNodes.concat(
-            network.getConnectedNodes(connectedNodes[j])
+            network.getConnectedNodes(connectedNodes[j], 'to')
           );
         }
       }
   
       // all second degree nodes get a different color and their label back
       for (i = 0; i < allConnectedNodes.length; i++) {
-        allNodes[allConnectedNodes[i]].color = "rgba(150,150,150,0.75)";
+        allNodes[allConnectedNodes[i]].color = "rgba(150,0,150,0.75)";
       }
   
       // all first degree nodes get their own color and their label back
