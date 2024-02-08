@@ -120,6 +120,32 @@
                 "description": "",
                 "mandatory": false,
                 "visibilityCondition": "model.advanced_parameters"
+            },
+            {
+                "name": "display_edges_caption",
+                "type": "BOOLEAN",
+                "label": "Display edge label ?",
+                "description": "Display edge label in the graph ?",
+                "mandatory": false,
+                "defaultValue": false,
+                "visibilityCondition": "model.advanced_parameters"
+            },
+            {
+                "name": "json_edges_caption",
+                "type": "BOOLEAN",
+                "label": "JSON edge labels ?",
+                "description": "Parse edge labels as JSON in tooltip",
+                "mandatory": false,
+                "defaultValue": false,
+                "visibilityCondition": "model.advanced_parameters"
+            },
+            {
+                "name": "edges_color_jsonpath",
+                "type": "STRING",
+                "label": "Edges color JSON Path",
+                "description": "Path of JSON element defining edge color",
+                "mandatory": false,
+                "visibilityCondition": "model.json_edges_caption"
             }
         ],
         "topBar": "STD_FORM",

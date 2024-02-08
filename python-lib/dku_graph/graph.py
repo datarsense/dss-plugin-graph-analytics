@@ -2,6 +2,8 @@ import time
 import random
 import numpy as np
 import pandas as pd
+import ast
+import json
 import logging
 import igraph
 from graph_analytics_constants import EXISTING_COLORS
@@ -26,6 +28,9 @@ class Graph:
         self.edges_width = graph_params.get('edges_width', None)
         self.directed_edges = graph_params.get('directed_edges', True)
         self.numerical_colors = graph_params.get('numerical_colors', False)
+        self.json_edges_caption = graph_params.get('json_edges_caption', False)
+        self.display_edges_caption = graph_params.get('display_edges_caption', False)
+        self.edges_color_jsonpath = graph_params.get('edges_color_jsonpath', None)
 
     def create_graph(self, df):
         """
@@ -126,13 +131,30 @@ class Graph:
 
     def _create_edge(self, row, source, target):
         edge = {'from': source, 'to': target}
-        if self.edges_caption:
+        # Selective display of edges labels
+        if self.display_edges_caption and self.edges_caption:
             edge['label'] = str(row[self.edges_caption])
+            edge['caption'] = str(row[self.edges_caption])
+        elif self.edges_caption:
+            edge['caption'] = str(row[self.edges_caption])
+        
+        # Tweak edge width
         if self.edges_width:
             if not np.isnan(row[self.edges_width]):
                 edge['value'] = row[self.edges_width]
         else:  # initialize edge weight
             edge['value'] = 1
+
+        # Tweak edge color if a color is defined in edges label json
+        if self.json_edges_caption and self.edges_color_jsonpath:
+            edge_caption_json = ast.literal_eval(edge['caption'])
+            if self.edges_color_jsonpath in edge_caption_json.keys():
+                edge['color'] = edge_caption_json[self.edges_color_jsonpath]
+            else:
+                edge['color.inherit'] = True
+        else:
+            edge['color.inherit'] = True
+        
         return edge
 
     def _update_edge(self, edge_params):
@@ -165,8 +187,11 @@ class Graph:
     def _add_edge_title(self, edge_params):
         """ create a nice title string to display on edge popup """
         title = "<b>{}</b> -> <b>{}</b>".format(edge_params['from'], edge_params['to'])
-        if 'label' in edge_params:
-            title += "<br>caption: <b>{}</b>".format(edge_params['label'])
+        if not self.json_edges_caption and 'caption' in edge_params:
+            title += "<br>caption: <b>{}</b>".format(edge_params['caption'])
+        if self.json_edges_caption and 'caption' in edge_params:
+            edge_caption_json = ast.literal_eval(edge_params['caption'])
+            title += "<br>caption: <pre>{}</pre>".format(json.dumps(edge_caption_json, indent=2))
         if 'value' in edge_params:
             title += "<br>width: <b>{}</b>".format(edge_params['value'])
         edge_params['title'] = title

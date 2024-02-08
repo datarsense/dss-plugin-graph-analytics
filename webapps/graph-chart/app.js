@@ -70,7 +70,7 @@ window.addEventListener('message', function(event) {
             if (webAppConfig['advanced_parameters']) {
                 var advanced_properties = [
                     "source_nodes_color", "source_nodes_size", "target_nodes_color", "target_nodes_size",
-                    "edges_caption", "edges_width", "numerical_colors"
+                    "edges_caption", "edges_width", "numerical_colors", "display_edges_caption", "json_edges_caption", "edges_color_jsonpath"
                 ]
                 for (var i = 0; i < advanced_properties.length; i++) {
                     if (webAppConfig[advanced_properties[i]]) {
@@ -152,7 +152,7 @@ window.addEventListener('message', function(event) {
                                         label: false,
                                         customScalingFunction: quadraticScalingFunction
                                     },
-                                    color: { inherit: true },
+                                    //color: { inherit: true },
                                     smooth: {
                                         type: "continuous"
                                     },
@@ -210,7 +210,7 @@ function neighbourhoodHighlight(params) {
       highlightActive = true;
       var i, j;
       var selectedNode = params.nodes[0];
-      var degrees = 2;
+      var degrees = 5;
   
       // mark all nodes as hard to read.
       for (var nodeId in allNodes) {
